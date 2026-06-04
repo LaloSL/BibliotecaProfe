@@ -1,0 +1,127 @@
+extends layout.pug
+
+block content
+
+  h1 Usuarios interesados en mis publicaciones
+
+  if intereses && intereses.length > 0
+
+    each interes in intereses
+
+      article.interesado
+
+        // ===============================
+        // 📸 PUBLICACIÓN INTERESADA
+        // ===============================
+
+        h2 Publicación interesada
+
+        if interes.Publicacion
+
+          if interes.Publicacion.descripcion
+
+            p
+              strong Descripción:
+              |  #{interes.Publicacion.descripcion}
+
+          if interes.Publicacion.Archivos && interes.Publicacion.Archivos.length > 0
+
+            each archivo in interes.Publicacion.Archivos
+
+              if archivo.tipo && archivo.tipo.startsWith('image')
+
+                img(
+                  src=`/uploads/${archivo.ruta}`
+                  alt='Imagen de la publicación'
+                  width='100%'
+                )
+
+              else if archivo.tipo && archivo.tipo.startsWith('video')
+
+                video(
+                  width='100%'
+                  controls
+                )
+
+                  source(
+                    src=`/uploads/${archivo.ruta}`
+                    type=archivo.tipo
+                  )
+
+              else
+
+                p.text-muted
+                  | Archivo no compatible
+
+        hr
+
+        // ===============================
+        // 👤 USUARIO INTERESADO
+        // ===============================
+
+        h3 Usuario interesado
+
+        if interes.usuarioInteresado
+
+          p
+            strong Nombre:
+            |  #{interes.usuarioInteresado.nombre}
+
+          if interes.usuarioInteresado.email
+
+            p
+              strong Email:
+              |  #{interes.usuarioInteresado.email}
+
+          if interes.usuarioInteresado.dni
+
+            p
+              strong DNI:
+              |  #{interes.usuarioInteresado.dni}
+
+        else
+
+          p.text-muted
+            | No se encontró información del usuario interesado.
+
+        // ===============================
+        // 📌 ESTADO
+        // ===============================
+
+        p
+          strong Estado:
+          |  #{interes.estado}
+
+        // ===============================
+        // 📅 FECHA
+        // ===============================
+
+        if interes.createdAt
+
+          p
+            strong Fecha de interés:
+            |  #{interes.createdAt}
+
+        // ===============================
+        // 💬 MENSAJERÍA PRIVADA
+        // ===============================
+
+        if interes.usuarioInteresado
+
+          a.btn(
+            href=`/mensajes/${interes.usuarioInteresado.id}`
+          )
+            | Contactar usuario
+
+        br
+        br
+
+        a.btn(href='/')
+          | Volver al inicio
+
+        hr
+
+  else
+
+    p
+      | Todavía no hay usuarios interesados en tus publicaciones.

@@ -1,0 +1,34 @@
+extends layout.pug
+
+block content
+
+  h1 Comentarios recibidos
+
+  if comentarios && comentarios.length > 0
+
+    each comentario in comentarios
+
+      article.comentario
+
+        p
+          strong Usuario:
+          |  #{comentario.Usuario.nombre}
+
+        p
+          strong Comentó:
+          |  #{comentario.contenido}
+
+        p
+          strong Publicación:
+          |  #{comentario.Publicacion.descripcion}
+
+        p
+          strong Fecha:
+          |  #{comentario.createdAt}
+
+        hr
+
+  else
+
+    p
+      | No recibiste comentarios todavía.

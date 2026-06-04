@@ -1,0 +1,41 @@
+extends layout.pug
+
+block content
+
+  h1 Mis colecciones
+
+  br
+
+  a.btn(
+    href='/colecciones/nueva'
+  )
+    | Nueva colección
+
+  hr
+
+  if colecciones && colecciones.length > 0
+
+    each coleccion in colecciones
+
+      article.coleccion
+
+        h3
+          | #{coleccion.nombre}
+
+        if coleccion.createdAt
+
+          p
+            strong Creada:
+            |  #{coleccion.createdAt}
+
+        a.btn(
+          href=`/colecciones/${coleccion.id}`
+        )
+          | Ver colección
+
+        hr
+
+  else
+
+    p
+      | Todavía no creaste colecciones.

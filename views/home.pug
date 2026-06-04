@@ -1,0 +1,361 @@
+extends layout.pug
+
+block content
+
+  h1 Bienvenido a la Biblioteca
+
+  p
+    | Aquí puedes gestionar tus libros y préstamos.
+
+  hr
+
+  h2 Módulo de prueba: publicaciones
+
+  p
+    | Desde acá vamos a probar la subida de imágenes con descripción.
+
+  if currentUser
+    a.btn(href='/subir')
+      | Crear nueva publicación
+  else
+    p
+      | Para subir una publicación primero tenés que iniciar sesión.
+
+    a.btn(href='/login')
+      | Iniciar sesión
+
+  hr
+
+  h2 Buscar publicaciones
+
+  form(action='/' method='GET')
+
+    div
+      label(for='buscar')
+        | Buscar texto:
+      br
+      input#buscar(
+        type='text'
+        name='buscar'
+        placeholder='Buscar por descripción, usuario o etiqueta...'
+        value=busqueda ? busqueda.buscar : ''
+      )
+
+    br
+
+    div
+      label(for='tipo')
+        | Tipo de contenido:
+      br
+      select#tipo(name='tipo')
+        option(value='')
+          | Todos
+        option(value='image' selected=busqueda && busqueda.tipo === 'image')
+          | Imágenes
+        option(value='video' selected=busqueda && busqueda.tipo === 'video')
+          | Videos
+
+    br
+
+    div
+      label(for='ordenar')
+        | Ordenar por:
+      br
+      select#ordenar(name='ordenar')
+        option(value='')
+          | Más recientes
+        option(value='valoracion' selected=busqueda && busqueda.ordenar === 'valoracion')
+          | Mejor valoración
+        option(value='likes' selected=busqueda && busqueda.ordenar === 'likes')
+          | Más likes
+
+    br
+
+    div
+      label(for='fechaDesde')
+        | Fecha desde:
+      br
+      input#fechaDesde(
+        type='date'
+        name='fechaDesde'
+        value=busqueda ? busqueda.fechaDesde : ''
+      )
+
+    br
+
+    div
+      label(for='fechaHasta')
+        | Fecha hasta:
+      br
+      input#fechaHasta(
+        type='date'
+        name='fechaHasta'
+        value=busqueda ? busqueda.fechaHasta : ''
+      )
+
+    br
+
+    div
+      label(for='likesMinimos')
+        | Likes mínimos:
+      br
+      input#likesMinimos(
+        type='number'
+        name='likesMinimos'
+        min='0'
+        value=busqueda ? busqueda.likesMinimos : ''
+      )
+
+    br
+
+    button.btn(type='submit')
+      | Buscar
+
+    a.btn(href='/')
+      | Limpiar búsqueda
+
+  hr
+
+  h2 Publicaciones recientes
+
+  if publicaciones && publicaciones.length > 0
+
+    each publicacion in publicaciones
+
+      article.publicacion
+
+        h3= publicacion.Usuario ? publicacion.Usuario.nombre : 'Usuario desconocido'
+
+        if publicacion.descripcion
+          p= publicacion.descripcion
+
+        - const etiquetasPublicacion = publicacion.Etiquetas || publicacion.Etiqueta || []
+
+        if etiquetasPublicacion.length > 0
+          div.etiquetas.mb-3
+            strong
+              | Etiquetas:
+            br
+            each etiqueta in etiquetasPublicacion
+              span.badge.bg-secondary.me-1
+                | #{etiqueta.nombre}
+        else
+          p.text-muted
+            | Sin etiquetas.
+
+        if publicacion.Archivos && publicacion.Archivos.length > 0
+
+          each archivo in publicacion.Archivos
+
+            if archivo.tipo && archivo.tipo.startsWith('image')
+              if archivo.tieneCopyright && archivo.rutaProtegida
+                img(
+                  src=`/uploads/${archivo.rutaProtegida}`
+                  alt='Imagen protegida'
+                  width='100%'
+                )
+              else
+                img(
+                  src=`/uploads/${archivo.ruta}`
+                  alt='Imagen original'
+                  width='100%'
+                )
+
+            else if archivo.tipo && archivo.tipo.startsWith('video')
+              video(width='100%' controls)
+                source(
+                  src=`/uploads/${archivo.ruta}`
+                  type=archivo.tipo
+                )
+
+            else
+              p.text-muted
+                | Archivo no compatible
+
+            - const cantidadValoraciones = archivo.Valoracions ? archivo.Valoracions.length : 0
+            - const sumaValoraciones = archivo.Valoracions ? archivo.Valoracions.reduce((total, v) => total + v.valor, 0) : 0
+            - const promedioValoraciones = cantidadValoraciones > 0 ? (sumaValoraciones / cantidadValoraciones).toFixed(1) : 'Sin valoraciones'
+
+            div.promedio-valoracion.mt-2
+              if cantidadValoraciones > 0
+                p
+                  strong Valoración promedio:
+                  | #{promedioValoraciones} / 5
+                p
+                  strong Cantidad de valoraciones:
+                  | #{cantidadValoraciones}
+              else
+                p.text-muted
+                  | Esta imagen todavía no tiene valoraciones.
+
+            div.valoracion.mt-3
+              if currentUser
+                if currentUser.id !== publicacion.usuarioId
+                  h5
+                    | Valorar imagen
+
+                  - const yaValoro = archivo.Valoracions && archivo.Valoracions.some(v => v.usuarioId === currentUser.id)
+
+                  if yaValoro
+                    select(name='valor' disabled)
+                      option
+                        | Ya valoraste esta imagen
+
+                    button.btn.btn-sm.btn-secondary.ms-2(type='button' disabled)
+                      | Valoración registrada
+                  else
+                    form(action=`/valoraciones/${archivo.id}` method='POST')
+                      select(name='valor' required)
+                        option(value='')
+                          | Seleccionar valoración
+                        option(value='1')
+                          | 1 ⭐
+                        option(value='2')
+                          | 2 ⭐⭐
+                        option(value='3')
+                          | 3 ⭐⭐⭐
+                        option(value='4')
+                          | 4 ⭐⭐⭐⭐
+                        option(value='5')
+                          | 5 ⭐⭐⭐⭐⭐
+
+                      button.btn.btn-sm.btn-warning.ms-2(type='submit')
+                        | Valorar
+              else
+                p.text-muted
+                  | Inicia sesión para valorar imágenes.
+
+        if publicacion.createdAt
+          small
+            | Publicado el #{publicacion.createdAt}
+
+        br
+        br
+
+        div.likes
+          form(action=`/likes/${publicacion.id}` method='POST')
+            button(type='submit')
+              | ❤️ Me gusta
+
+          p
+            | Cantidad de likes:
+            strong= publicacion.Likes ? publicacion.Likes.length : 0
+
+        div.interes.mt-3
+          if currentUser
+            if currentUser.id !== publicacion.usuarioId
+              form(action=`/intereses/${publicacion.id}` method='POST')
+                button.btn.btn-sm.btn-info(type='submit')
+                  | Me interesa
+            else
+              p.text-muted
+                | Esta publicación es tuya.
+          else
+            p.text-muted
+              | Inicia sesión para indicar interés.
+
+        div.colecciones.mt-3
+          if currentUser
+            h5
+              | Guardar en colección
+
+            if colecciones && colecciones.length > 0
+              each coleccion in colecciones
+                form(
+                  action=`/colecciones/${coleccion.id}/agregar/${publicacion.id}`
+                  method='POST'
+                  style='display:inline-block; margin-right: 5px;'
+                )
+                  button.btn.btn-sm.btn-secondary(type='submit')
+                    | Guardar en #{coleccion.nombre}
+            else
+              p.text-muted
+                | Todavía no tenés colecciones.
+
+        div.denuncia.mt-3
+          if currentUser
+            - const yaDenuncio = publicacion.Denuncia && publicacion.Denuncia.some(d => d.usuarioId === currentUser.id)
+
+            if yaDenuncio
+              button.btn.btn-sm.btn-secondary(type='button' disabled)
+                | Ya denunciaste esta publicación
+            else
+              a.btn.btn-sm.btn-danger(href=`/denuncias/${publicacion.id}`)
+                | Denunciar publicación
+          else
+            p.text-muted
+              | Debes iniciar sesión para denunciar.
+
+        div.comentarios.mt-3
+          h5
+            | Comentarios
+
+          if currentUser && currentUser.id === publicacion.usuarioId
+            form(
+              action=`/publicaciones/${publicacion.id}/modificar-estado-comentarios`
+              method='POST'
+            )
+              if publicacion.comentarios_habilitados
+                button.btn.btn-sm.btn-secondary.mb-2(type='submit')
+                  | Deshabilitar comentarios
+              else
+                button.btn.btn-sm.btn-success.mb-2(type='submit')
+                  | Habilitar comentarios
+
+          if publicacion.Comentarios && publicacion.Comentarios.length > 0
+            each comentario in publicacion.Comentarios
+              .border.rounded.p-2.mb-2
+                strong= comentario.Usuario ? comentario.Usuario.nombre : 'Usuario'
+
+                p.mb-0= comentario.contenido
+
+                if currentUser && currentUser.id !== comentario.usuarioId
+                  - const yaDenuncioComentario = comentario.DenunciaComentarios && comentario.DenunciaComentarios.some(function(d) { return d.usuarioId === currentUser.id; })
+
+                  br
+
+                  if yaDenuncioComentario
+                    button.btn.btn-sm.btn-secondary(type='button' disabled)
+                      | Ya denunciaste este comentario
+                  else
+                    form(
+                      action=`/denuncias-comentarios/${comentario.id}`
+                      method='POST'
+                    )
+                      button.btn.btn-sm.btn-danger(type='submit')
+                        | Denunciar comentario
+          else
+            p.text-muted
+              | Sin comentarios todavía.
+
+          if currentUser
+            if publicacion.comentarios_habilitados
+              form(action=`/comentarios/${publicacion.id}` method='POST')
+                textarea.form-control(
+                  name='contenido'
+                  rows='2'
+                  placeholder='Escribí un comentario...'
+                  required
+                )
+
+                button.btn.btn-sm.btn-primary.mt-2(type='submit')
+                  | Comentar
+            else
+              p.text-muted
+                | Los comentarios fueron deshabilitados por el autor de la publicación.
+          else
+            p
+              | Para comentar tenés que
+              a(href='/login')
+                | iniciar sesión
+              | .
+
+        hr
+
+  else
+    if busqueda
+      p
+        | No se encontraron publicaciones con esos filtros.
+    else
+      p
+        | Todavía no hay publicaciones cargadas.

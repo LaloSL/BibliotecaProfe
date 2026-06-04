@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1 Iniciar Sesión
+
+  if error
+    .error-message= error
+
+  form(action='/login', method='POST')
+    div
+      label(for='dni') DNI:
+      input(type='text', id='dni', name='dni', required)
+
+    div
+      label(for='password') Contraseña:
+      input(type='password', id='password', name='password', required)
+
+    button(type='submit') Ingresar
+
+  p
+    a(href='/recuperar') ¿Olvidaste tu contraseña?

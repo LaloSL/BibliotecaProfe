@@ -1,0 +1,49 @@
+extends layout.pug
+
+block content
+
+  h1 Valoraciones recibidas
+
+  if valoraciones && valoraciones.length > 0
+
+    each valoracion in valoraciones
+
+      article.valoracion
+
+        p
+          strong Usuario:
+          |  #{valoracion.Usuario ? valoracion.Usuario.nombre : 'Usuario'}
+
+        p
+          strong Valoración:
+          |  #{valoracion.valor} / 5
+
+        if valoracion.Archivo && valoracion.Archivo.Publicacion
+
+          p
+            strong Publicación:
+            |  #{valoracion.Archivo.Publicacion.descripcion}
+
+        if valoracion.Archivo
+
+          p
+            strong Imagen:
+            br
+
+          img(
+            src=`/uploads/${valoracion.Archivo.rutaProtegida || valoracion.Archivo.ruta}`
+            width='300'
+          )
+
+        if valoracion.createdAt
+
+          p
+            strong Fecha:
+            |  #{valoracion.createdAt}
+
+        hr
+
+  else
+
+    p
+      | No recibiste valoraciones todavía.

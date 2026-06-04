@@ -1,0 +1,173 @@
+doctype html
+
+html
+
+  head
+
+    title Biblioteca Comunitaria
+
+    style.
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      div.items {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      div.login {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .contenedor {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 8px 12px;
+        border: 1px solid #333;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+
+      .menu-notificaciones {
+        position: relative;
+        display: inline-block;
+      }
+
+      .boton-notificaciones {
+        background: none;
+        border: none;
+        color: blue;
+        cursor: pointer;
+        font: inherit;
+        padding: 0;
+      }
+
+      .opciones-notificaciones {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #333;
+        min-width: 180px;
+        z-index: 10;
+      }
+
+      .opciones-notificaciones a {
+        display: block;
+        padding: 8px 10px;
+        color: blue;
+      }
+
+      .opciones-notificaciones a:hover {
+        background-color: #eee;
+      }
+
+      .menu-notificaciones:hover .opciones-notificaciones {
+        display: block;
+      }
+
+  body
+
+    nav
+
+      div.items
+
+        a(href='/')
+          | Inicio
+
+        if currentUser
+
+          a(href='/libros')
+            | Libros
+
+          a(href='/usuarios')
+            | Usuarios
+
+          a(href='/subir')
+            | Subir publicación
+
+          a(href='/colecciones')
+            | Mis colecciones
+
+          a(href='/colecciones/nueva')
+            | Nueva colección
+
+          a(href='/denuncias-comentarios')
+            | Comentarios denunciados
+
+          div.menu-notificaciones
+
+            button.boton-notificaciones(type='button')
+              | Notificaciones ▾
+
+            div.opciones-notificaciones
+
+              a(href='/notificaciones/comentarios')
+                | Comentarios recibidos
+
+              a(href='/notificaciones/valoraciones')
+                | Valoraciones recibidas
+
+              a(href='/intereses/mis-intereses')
+                | Me interesa
+
+              a(href='/notificaciones/seguidores')
+                | Seguidores nuevos
+
+              a(href='/mensajes')
+                | Mensajes recibidos
+
+          if currentUser.rol === 'admin'
+
+            a(href='/prestamos')
+              | Préstamos
+
+            a(href='/administrador')
+              | Administrador
+
+            a(href='/moderacion')
+              | Moderación
+
+          a(href='/prestamos/usuario')
+            | Mis Préstamos
+
+          a(href='/modiContra')
+            | Modificar contraseña
+
+        else
+
+          a(href='/libros')
+            | Libros
+
+      div.login
+
+        if currentUser
+
+          span
+            | Bienvenido, #{currentUser.nombre} (#{currentUser.rol})
+
+          a(href='/logout')
+            | Cerrar Sesión
+
+        else
+
+          a(href='/login')
+            | Login
+
+    .contenedor
+
+      block content

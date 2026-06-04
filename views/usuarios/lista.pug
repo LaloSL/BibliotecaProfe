@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  h1 Usuarios
+  a(href='/usuarios/nuevo') Nuevo usuario
+  table(style='border-collapse: collapse;')
+    thead
+      tr
+        th(style='border: 1px solid #000;') Nombre
+        th(style='border: 1px solid #000;') Email
+        th(style='border: 1px solid #000;') DNI
+        th(style='border: 1px solid #000;') Fecha registro
+        th(style='border: 1px solid #000;') Acciones
+    tbody
+      each usuario in usuarios
+        tr
+          td(style='border: 1px solid #000;') #{usuario.nombre}
+          td(style='border: 1px solid #000;') #{usuario.email}
+          td(style='border: 1px solid #000;') #{usuario.dni}
+          td(style='border: 1px solid #000;') #{usuario.fecha_registro.toLocaleDateString()}
+          td(style='border: 1px solid #000;')
+            form(action=`/usuarios/${usuario.id}/prestamos`, method='get', style='display:inline')
+              button(type='submit') Ver préstamos
+            form(action=`/usuarios/${usuario.id}/cantidad`, method='get', style='display:inline')
+              button(type='submit') Cantidad de libros prestados
+  if error
+    p(style='color: red;') #{error}

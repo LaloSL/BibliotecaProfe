@@ -1,0 +1,80 @@
+extends layout.pug
+
+block content
+
+  h1 Nueva colección
+
+  br
+
+  if error
+
+    p(style='color: red;')
+      | #{error}
+
+  form(
+    action='/colecciones/nueva'
+    method='POST'
+  )
+
+    div
+
+      label(for='nombre')
+        | Nombre de la colección
+
+      br
+
+      input#nombre(
+        type='text'
+        name='nombre'
+        placeholder='Ej: Paisajes'
+        required
+      )
+
+    br
+
+    button.btn(
+      type='submit'
+    )
+      | Crear colección
+
+    a.btn(
+      href='/colecciones'
+      style='margin-left: 10px;'
+    )
+      | Cancelar
+
+  hr
+
+  h2 Mis colecciones
+
+  if colecciones && colecciones.length > 0
+
+    each coleccion in colecciones
+
+      div(
+        style='margin-bottom: 20px;'
+      )
+
+        h3
+          | #{coleccion.nombre}
+
+        a.btn(
+          href=`/colecciones/${coleccion.id}`
+        )
+          | Ver colección
+
+        form(
+          action=`/colecciones/${coleccion.id}/eliminar`
+          method='POST'
+          style='display:inline-block; margin-left: 10px;'
+        )
+
+          button.btn(
+            type='submit'
+          )
+            | Eliminar colección
+
+  else
+
+    p
+      | Todavía no tenés colecciones creadas.

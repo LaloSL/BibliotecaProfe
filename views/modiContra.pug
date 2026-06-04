@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1 Modificar contraseña
+
+  if error
+    p(style="color:red")= error
+
+  if mensaje
+    p(style="color:green")= mensaje
+
+  form(action='/modiContra', method='POST')
+    div
+      label(for='passwordActual') Contraseña actual:
+      input(type='password', id='passwordActual', name='passwordActual', required)
+
+    div
+      label(for='passwordNueva') Nueva contraseña:
+      input(type='password', id='passwordNueva', name='passwordNueva', required)
+
+    button(type='submit') Guardar contraseña

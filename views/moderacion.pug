@@ -1,0 +1,105 @@
+extends layout.pug
+
+block content
+
+  h1 Panel de moderación
+
+  p
+    | Publicaciones denunciadas pendientes de revisión.
+
+  hr
+
+  if publicaciones && publicaciones.length > 0
+
+    each publicacion in publicaciones
+
+      article.publicacion
+
+        h2
+          | Publicación ##{publicacion.id}
+
+        p
+          strong Usuario:
+          |  #{publicacion.Usuario ? publicacion.Usuario.nombre : 'Usuario'}
+
+        p
+          strong Descripción:
+          |  #{publicacion.descripcion}
+
+        p
+          strong Estado:
+          |  #{publicacion.estadoPublicacion}
+
+        p
+          strong Cantidad de denuncias:
+          |  #{publicacion.Denuncia ? publicacion.Denuncia.length : 0}
+
+        // ===============================
+        // MOSTRAR ARCHIVOS
+        // ===============================
+
+        if publicacion.Archivos && publicacion.Archivos.length > 0
+
+          each archivo in publicacion.Archivos
+
+            if archivo.tipo && archivo.tipo.startsWith('image')
+
+              if archivo.tieneCopyright && archivo.rutaProtegida
+
+                img(
+                  src=`/uploads/${archivo.rutaProtegida}`
+                  width='300'
+                )
+
+              else
+
+                img(
+                  src=`/uploads/${archivo.ruta}`
+                  width='300'
+                )
+
+            br
+            br
+
+        // ===============================
+        // FORMULARIO DE VEREDICTO
+        // ===============================
+
+        form(
+          action=`/moderacion/${publicacion.id}`
+          method='POST'
+        )
+
+          label(for='accion')
+            strong Veredicto:
+
+          br
+
+          select(
+            name='accion'
+            required
+          )
+
+            option(value='')
+              | Seleccionar acción
+
+            option(value='desestimar')
+              | Desestimar denuncias
+
+            option(value='bajada')
+              | Dar de baja publicación
+
+          br
+          br
+
+          button.btn(
+            type='submit'
+          )
+            | Aplicar decisión
+
+        hr
+
+  else
+
+    p
+      | No hay publicaciones en revisión.

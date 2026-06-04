@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 Recuperar contraseña
+
+  if error
+    p(style="color:red")= error
+
+  if mensaje
+    p(style="color:green")= mensaje
+    a(href='/login') Ir a iniciar sesión
+
+  form(action='/recuperar', method='POST')
+    div
+      label(for='dni') DNI:
+      input(type='text', id='dni', name='dni', required)
+
+    button(type='submit') Recuperar contraseña

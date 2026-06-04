@@ -1,0 +1,90 @@
+extends layout.pug
+
+block content
+
+  h1 Denunciar publicación
+
+  if error
+    p(style='color:red')
+      | #{error}
+
+  hr
+
+  h3 Publicación denunciada
+
+  p
+    strong Usuario:
+    |  #{publicacion.Usuario ? publicacion.Usuario.nombre : 'Usuario desconocido'}
+
+  if publicacion.descripcion
+    p
+      strong Descripción:
+      |  #{publicacion.descripcion}
+
+  hr
+
+  form(
+    action=`/denuncias/${publicacion.id}`
+    method='POST'
+  )
+
+    div.mb-3
+
+      label(for='motivo')
+        strong Motivo de la denuncia
+
+      br
+
+      select(
+        name='motivo'
+        id='motivo'
+        required
+      )
+
+        option(value='')
+          | Seleccionar motivo
+
+        option(value='spam')
+          | Spam
+
+        option(value='contenido_ofensivo')
+          | Contenido ofensivo
+
+        option(value='violencia')
+          | Violencia
+
+        option(value='informacion_falsa')
+          | Información falsa
+
+        option(value='otro')
+          | Otro
+
+    br
+
+    div.mb-3
+
+      label(for='descripcion')
+        strong Descripción de la denuncia
+
+      br
+
+      textarea(
+        name='descripcion'
+        id='descripcion'
+        rows='5'
+        cols='60'
+        placeholder='Describe el motivo de la denuncia...'
+        required
+      )
+
+    br
+
+    button.btn.btn-danger(
+      type='submit'
+    )
+      | Enviar denuncia
+
+    a.btn.btn-secondary.ms-2(
+      href='/'
+    )
+      | Cancelar

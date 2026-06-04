@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+  h1 Préstamos de #{usuario.nombre}
+  ul
+    each prestamo in prestamos
+      li Libro ID: #{prestamo.libroId} | Fecha préstamo: #{prestamo.fecha_prestamo.toLocaleDateString()} | Devuelto: #{prestamo.fecha_devolucion ? prestamo.fecha_devolucion.toLocaleDateString() : 'No'}
+    if prestamos && prestamos.length === 0
+      li No hay préstamos activos para este usuario.
+  if error
+    p(style='color: red;') #{error}

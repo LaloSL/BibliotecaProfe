@@ -1,0 +1,7 @@
+extends ../layout
+
+block content
+  h1 Cantidad de libros prestados a #{usuario.nombre}
+  p Libros actualmente prestados: #{cantidad}
+  if error
+    p(style='color: red;') #{error}

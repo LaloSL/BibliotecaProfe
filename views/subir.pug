@@ -1,0 +1,104 @@
+
+extends layout.pug
+
+block content
+
+  h1 Subir publicación
+
+  if error
+    .alert(style="color: red; margin-bottom: 10px;")
+      p= error
+
+  form(action="/subir", method="POST", enctype="multipart/form-data")
+
+    // ===============================
+    // ARCHIVOS
+    // ===============================
+
+    div
+      label(for="imagenes") Seleccionar imagen o video:
+      br
+
+      input#imagenes(
+        type="file"
+        name="imagenes"
+        accept="image/*,video/*"
+        multiple
+        required
+      )
+
+    br
+
+    // ===============================
+    // DESCRIPCIÓN
+    // ===============================
+
+    div
+      label(for="descripcion") Descripción:
+      br
+
+      textarea#descripcion(
+        name="descripcion"
+        rows="4"
+        cols="50"
+        placeholder="Escribí una descripción..."
+        required
+      )
+
+    br
+
+    // ===============================
+    // ETIQUETA
+    // ===============================
+
+    div
+      label(for="etiqueta") Etiqueta:
+      br
+
+      input#etiqueta(
+        type="text"
+        name="etiqueta"
+        placeholder="Ej: Playa al atardecer"
+        required
+      )
+
+    br
+
+    // ===============================
+    // LICENCIA / COPYRIGHT
+    // ===============================
+
+    div
+
+      label(for="tieneCopyright")
+        | Licencia de la imagen:
+
+      br
+
+      select(
+        name="tieneCopyright"
+        id="tieneCopyright"
+        required
+      )
+
+        option(
+          value=""
+          disabled
+          selected
+        )
+          | Seleccionar licencia
+
+        option(value="0")
+          | Sin copyright
+
+        option(value="1")
+          | Con copyright y marca de agua
+
+    br
+
+    // ===============================
+    // BOTÓN
+    // ===============================
+
+    button(type="submit")
+      | Subir publicación

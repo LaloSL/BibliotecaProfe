@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  h1 Panel de Administración
+
+  table(border="1")
+    thead
+      tr
+        th Nombre
+        th Email
+        th DNI
+        th Rol
+        th Acciones
+    tbody
+      each usuario in usuarios
+        tr
+          td= usuario.nombre
+          td= usuario.email
+          td= usuario.dni
+          td= usuario.rol
+          td
+            if usuario.rol !== 'admin'
+              form(action=`/administrador/${usuario.id}/hacer-admin`, method='POST')
+                button(type='submit') Hacer Admin
+            else
+              form(action=`/administrador/${usuario.id}/quitar-admin`, method='POST')
+                button(type='submit') Quitar Admin

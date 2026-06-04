@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  h1 Préstamos activos
+  a(href='/prestamos/nuevo') Nuevo préstamo
+  table(style='border-collapse: collapse;')
+    thead
+      tr
+        th(style='border: 1px solid #000;') Usuario
+        th(style='border: 1px solid #000;') Libro
+        th(style='border: 1px solid #000;') Fecha préstamo
+        th(style='border: 1px solid #000;') Acción
+    tbody
+      each prestamo in prestamos
+        tr
+          td(style='border: 1px solid #000;') #{prestamo.Usuario.nombre}
+          td(style='border: 1px solid #000;') #{prestamo.Libro.titulo}
+          td(style='border: 1px solid #000;') #{prestamo.fecha_prestamo.toLocaleDateString()}
+          td(style='border: 1px solid #000;')
+            if !prestamo.fecha_devolucion
+              form(action=`/prestamos/${prestamo.id}/devolver`, method='POST', style='display:inline')
+                button(type='submit') Devolver

@@ -1,0 +1,34 @@
+extends layout.pug
+
+block content
+
+  h1 Denuncias de comentarios
+
+  if denuncias && denuncias.length > 0
+
+    each denuncia in denuncias
+
+      article.denuncia
+
+        p
+          strong Comentario:
+          |  #{denuncia.Comentario.contenido}
+
+        p
+          strong Usuario denunciado:
+          |  #{denuncia.Comentario.Usuario.nombre}
+
+        p
+          strong Motivo:
+          |  #{denuncia.motivo}
+
+        p
+          strong Descripción:
+          |  #{denuncia.descripcion}
+
+        hr
+
+  else
+
+    p
+      | No hay denuncias de comentarios.

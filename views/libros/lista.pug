@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+  h1 Libros disponibles
+  a(href='/libros/nuevo') Nuevo libro
+  table(style='border-collapse: collapse;')
+    thead
+      tr
+        th(style='border: 1px solid #000;') Título
+        th(style='border: 1px solid #000;') Autor
+        th(style='border: 1px solid #000;') Año
+        th(style='border: 1px solid #000;') Categoría
+        th(style='border: 1px solid #000;') ISBN
+    tbody
+      each libro in libros
+        tr
+          td(style='border: 1px solid #000;') #{libro.titulo}
+          td(style='border: 1px solid #000;') #{libro.autor}
+          td(style='border: 1px solid #000;') #{libro.anio_publicacion}
+          td(style='border: 1px solid #000;') #{libro.categoria}
+          td(style='border: 1px solid #000;') #{libro.isbn}
+  if error 
+    p(style='color: red;') #{error}
