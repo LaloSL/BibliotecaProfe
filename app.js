@@ -220,35 +220,20 @@ app.use('/mensajes', mensajesRoutes);
 // ===============================
 
 sequelize.sync()
-
   .then(() => {
-
-    console.log(
-      'Modelos sincronizados'
-    );
-
-    app.listen(
-      PORT,
-      '::',
-      () => {
-
-        console.log(
-          `Servidor iniciado en http://localhost:${PORT}`
-        );
-
-      }
-    );
-
+    console.log('Modelos sincronizados');
   })
-
   .catch((err) => {
-
-    console.error(
-      'Error al sincronizar modelos:',
-      err
-    );
-
+    console.error('Error al sincronizar modelos:', err);
   });
+
+if (require.main === module) {
+  app.listen(PORT, '::', () => {
+    console.log(`Servidor iniciado en http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
 
 // ===============================
 // DEPENDENCIAS UTILIZADAS
