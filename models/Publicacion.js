@@ -6,6 +6,12 @@ class Publicacion extends Model {}
 
 Publicacion.init(
   {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
+
     descripcion: {
       type: DataTypes.TEXT,
       allowNull: false

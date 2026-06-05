@@ -255,3 +255,5 @@ sequelize.sync()
 // ===============================
 
 // npm install express sequelize mysql2 multer express-session pug bcrypt dotenv sharp
+//npm install pg pg-hstore
+//npm uninstall mysql2
