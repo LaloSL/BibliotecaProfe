@@ -1,16 +1,11 @@
-import 'dotenv/config';
-import { Sequelize } from 'sequelize';
-//import pg from 'pg';
+// models/db.js
+require('dotenv').config();
+const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize({
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  //dialectModule: pg,
-  host: process.env.DB_HOST,
-  username: process.env.DB_USER,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  dialectOptions: {           // ← Agrega esto
+  logging: false,
+  dialectOptions: {
     ssl: {
       require: true,
       rejectUnauthorized: false
@@ -18,4 +13,4 @@ const sequelize = new Sequelize({
   }
 });
 
-export default sequelize;
+module.exports = sequelize;
