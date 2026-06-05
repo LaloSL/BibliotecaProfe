@@ -1,6 +1,7 @@
-import 'dotenv/config';
-import { Sequelize } from 'sequelize';
-import pg from 'pg';
+// db.js
+require('dotenv').config();
+const { Sequelize } = require('sequelize');
+const pg = require('pg');
 
 const sslConn = process.env.DB_SSL === 'true' ? {
   ssl: {
@@ -20,4 +21,4 @@ const sequelize = new Sequelize({
   port: process.env.DB_PORT,
 });
 
-export default sequelize;
+module.exports = sequelize;
